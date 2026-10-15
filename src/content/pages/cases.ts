@@ -1,0 +1,2 @@
+import type { PageContent } from '../types';
+const content: PageContent={description:'Review FHS filtration case-study availability and related wine and electroplating processes. Published stories require supporting evidence and approval.',intro:'Filtration case studies should explain the customer requirement and the documented response. Customer stories need supporting evidence and permission to share them. We do not publish unsupported cost-saving figures.',sections:[]};export default content;

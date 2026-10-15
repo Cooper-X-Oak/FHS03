@@ -1,0 +1,13 @@
+import type { PageContent } from '../types';
+const content: PageContent = {
+  description:'Compare industrial filter cartridges by media, retention and housing fit. Send your existing cartridge part number for a matched quote.',
+  intro:'Industrial filter cartridges remove suspended particles from process liquids. Choose the construction around the contamination load, required retention and chemical compatibility, then match the cartridge ends and seals to the housing.',
+  selection:['For a substantial solids load, compare depth-media prefiltration before a finer final stage.','For a defined final retention requirement, compare membrane performance and the supporting test data.','For a replacement, identify the full part number, length, end connection and seal before choosing a material.'],
+  sections:[
+    {heading:'Depth media or pleated membrane?',paragraphs:['Depth cartridges capture particles through the thickness of the media. They are commonly considered for prefiltration and variable solids loading. Pleated constructions provide a larger filtering area within a cartridge format; the actual retention depends on the media and its test specification.','A membrane final filter needs protection from a high incoming solids load. Compare the whole filtration sequence, rather than asking the final membrane to do every job.']},
+    {heading:'Match the complete cartridge',paragraphs:['Compare the liquid and cleaning chemicals against every wetted part, including support layers and seals. Specify operating temperature and pressure together, since allowable differential pressure can change with temperature.','End-cap names and nominal length are not enough to prove fit. Send the housing model or a drawing of the adapter and seal seat. Confirm the cartridge installation and retention arrangement before ordering.']},
+    {heading:'Send the operating evidence',paragraphs:['For a reorder, include the existing code and quantity. For a short-life problem, add clean and changeout differential pressure, typical flow, liquid temperature and what changed upstream. These details help distinguish insufficient area, heavy solids loading and a mismatched retention target.']},
+  ],
+  faq:[{question:'What cartridge sizes and ratings can you supply?',answer:'[Confirm cartridge catalogue dimensions and retention ranges]'},{question:'What is the minimum order?',answer:'[Confirm cartridge minimum order quantity]'},{question:'Can I test a sample first?',answer:'[Confirm cartridge sample policy]'},{question:'What is the lead time?',answer:'[Confirm cartridge lead time]'}],
+};
+export default content;

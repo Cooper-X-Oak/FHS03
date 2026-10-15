@@ -1,0 +1,12 @@
+import type { PageContent } from '../types';
+const content: PageContent = {
+  description:'Compare filter housings for bag and cartridge systems. Confirm pressure, materials, connections and element fit before requesting a quote.',
+  intro:'A filter housing holds and seals the filter element while containing the process liquid. Choose a bag or cartridge arrangement around your flow, solids load and maintenance method, then confirm pressure, temperature and all wetted materials.',
+  selection:['For bag filtration, compare basket support, ring sealing and changeout access.','For cartridge filtration, confirm element quantity, end adapters and retention hardware.','For either format, specify design conditions, connection standards and the documentation your site requires.'],
+  sections:[
+    {heading:'Size for the operating liquid',paragraphs:['Water-based flow data cannot be applied unchanged to a viscous liquid. Send operating viscosity and temperature, expected flow and the allowed clean pressure drop. Include the pressure drop of both the housing and the filter element.','Check the space needed to remove the cover, basket or cartridges. A housing that fits the pipework can still be difficult to maintain if overhead access is restricted.']},
+    {heading:'Specify the pressure boundary',paragraphs:['Provide operating and design pressure, maximum temperature, chemical exposure and connection details. Identify the pressure-equipment documentation and inspection requirements for the installation. Material grade alone does not establish a housing pressure rating.','Depressurization, venting, draining and isolation must follow the approved site procedure. Do not open a filter housing while it is pressurized.']},
+    {heading:'Confirm the installed element',paragraphs:['An existing element code, internal photo and housing drawing are more useful than a general vessel photo. Check the sealing interface and any adapter hardware before ordering a replacement housing or changing filter formats.']}],
+  faq:[{question:'Which housing materials and pressure ratings are available?',answer:'[Confirm housing materials, pressure ratings and documentation]'},{question:'Can the connections match my line?',answer:'[Confirm housing connection standards and custom options]'},{question:'What is the minimum order?',answer:'[Confirm housing minimum order quantity]'},{question:'What is the lead time?',answer:'[Confirm housing lead time]'}],
+};
+export default content;

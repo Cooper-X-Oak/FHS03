@@ -1,0 +1,212 @@
+{
+  "pp": {
+    "page": "pleated",
+    "section": "PP",
+    "oldPath": "/products/cartridges/pp-pleated-filter-cartridges/"
+  },
+  "nylon": {
+    "page": "pleated",
+    "section": "Nylon",
+    "oldPath": "/products/cartridges/nylon-filter-cartridges/"
+  },
+  "gf": {
+    "page": "pleated",
+    "section": "Glass fibre",
+    "oldPath": "/products/cartridges/glass-fiber-filter-cartridges/"
+  },
+  "pvdf": {
+    "page": "pleated",
+    "section": "PVDF",
+    "oldPath": "/products/cartridges/pvdf-filter-cartridges/"
+  },
+  "melt-blown": {
+    "page": "depth",
+    "section": "Melt blown",
+    "oldPath": "/products/cartridges/melt-blown-filter-cartridges/"
+  },
+  "wound": {
+    "page": "depth",
+    "section": "String wound",
+    "oldPath": "/products/cartridges/string-wound-filter-cartridges/"
+  },
+  "carbon": {
+    "page": "depth",
+    "section": "Carbon block and carbon fibre",
+    "oldPath": "/products/cartridges/carbon-filter-cartridges/"
+  },
+  "ss-bag-housings": {
+    "page": "bag-housings",
+    "section": "Stainless steel",
+    "oldPath": "/products/housings/stainless-steel-bag-filter-housings/"
+  },
+  "pvdf-housings": {
+    "page": "bag-housings",
+    "section": "PVDF",
+    "oldPath": "/products/housings/pvdf-filter-housings/"
+  },
+  "duplex": {
+    "page": "bag-housings",
+    "section": "Duplex and multi-bag systems",
+    "oldPath": "/products/housings/duplex-filter-housings/"
+  },
+  "nylon-mesh": {
+    "page": "liquid-bags",
+    "section": "Nylon mesh",
+    "oldPath": "/products/bags/nylon-mesh-filter-bags/"
+  },
+  "oil-absorbing": {
+    "page": "liquid-bags",
+    "section": "Oil absorbing",
+    "oldPath": "/products/bags/oil-absorbing-filter-bags/"
+  },
+  "uf-membranes": {
+    "page": "membranes",
+    "section": "Ultrafiltration (UF)",
+    "oldPath": "/products/membranes/uf-membranes/"
+  },
+  "food-paper": {
+    "page": "filter-paper",
+    "section": "Food grade (2027)",
+    "oldPath": "/products/filter-paper/food-grade-filter-paper/"
+  },
+  "lab-paper": {
+    "page": "filter-paper",
+    "section": "Laboratory (2027)",
+    "oldPath": "/products/filter-paper/laboratory-filter-paper/"
+  },
+  "videojet": {
+    "page": "inkjet",
+    "section": "Videojet",
+    "oldPath": "/products/inkjet-printer-filters/videojet/"
+  },
+  "domino": {
+    "page": "inkjet",
+    "section": "Domino",
+    "oldPath": "/products/inkjet-printer-filters/domino/"
+  },
+  "markem-imaje": {
+    "page": "inkjet",
+    "section": "Markem-Imaje",
+    "oldPath": "/products/inkjet-printer-filters/markem-imaje/"
+  },
+  "hitachi": {
+    "page": "inkjet",
+    "section": "Hitachi",
+    "oldPath": "/products/inkjet-printer-filters/hitachi/"
+  },
+  "willett": {
+    "page": "inkjet",
+    "section": "Willett",
+    "oldPath": "/products/inkjet-printer-filters/willett/"
+  },
+  "lab-membranes": {
+    "page": "lab",
+    "section": "Membrane discs",
+    "oldPath": "/products/lab/membrane-filter-discs/"
+  },
+  "cup-filters": {
+    "page": "lab",
+    "section": "Filter cups",
+    "oldPath": "/products/lab/vacuum-filter-cups/"
+  },
+  "beer": {
+    "page": "food-beverage",
+    "section": "Beer",
+    "oldPath": "/applications/food-beverage/beer/"
+  },
+  "juice": {
+    "page": "food-beverage",
+    "section": "Juice and beverages",
+    "oldPath": "/applications/food-beverage/juice-beverages/"
+  },
+  "bottled-water": {
+    "page": "food-beverage",
+    "section": "Bottled water",
+    "oldPath": "/applications/food-beverage/bottled-water/"
+  },
+  "dairy": {
+    "page": "food-beverage",
+    "section": "Dairy and plant milk",
+    "oldPath": "/applications/food-beverage/dairy/"
+  },
+  "ro-pretreatment": {
+    "page": "water",
+    "section": "RO prefiltration",
+    "oldPath": "/applications/water/ro-prefiltration/"
+  },
+  "desalination": {
+    "page": "water",
+    "section": "Desalination",
+    "oldPath": "/applications/water/desalination/"
+  },
+  "ultrapure": {
+    "page": "water",
+    "section": "Ultrapure water",
+    "oldPath": "/applications/water/ultrapure-water/"
+  },
+  "wastewater": {
+    "page": "water",
+    "section": "Wastewater",
+    "oldPath": "/applications/water/wastewater/"
+  },
+  "paint-coatings": {
+    "page": "chemical",
+    "section": "Paints and coatings",
+    "oldPath": "/applications/chemical/paint-coatings/"
+  },
+  "ink-manufacturing": {
+    "page": "chemical",
+    "section": "Ink manufacturing",
+    "oldPath": "/applications/chemical/ink-manufacturing/"
+  },
+  "inkjet-printing": {
+    "page": "chemical",
+    "section": "Inkjet printing",
+    "oldPath": "/applications/inkjet-printing/"
+  },
+  "oil-gas": {
+    "page": "general-industry",
+    "section": "Oil and gas",
+    "oldPath": "/applications/general-industry/oil-gas/"
+  },
+  "energy": {
+    "page": "general-industry",
+    "section": "Energy",
+    "oldPath": "/applications/general-industry/energy/"
+  },
+  "pharma": {
+    "page": "general-industry",
+    "section": "Pharma and biotech",
+    "oldPath": "/applications/pharma/"
+  },
+  "microelectronics": {
+    "page": "general-industry",
+    "section": "Microelectronics",
+    "oldPath": "/applications/microelectronics/"
+  },
+  "private-label": {
+    "page": "distributors",
+    "section": "Private label",
+    "oldPath": "/solutions/private-label/"
+  },
+  "supply": {
+    "page": "oem",
+    "section": "Complete supply packages",
+    "oldPath": "/solutions/complete-supply/"
+  },
+  "end-users": {
+    "page": "solutions",
+    "section": "Buyer requirements",
+    "oldPath": "/solutions/end-users/"
+  },
+  "selection": {
+    "page": "knowledge",
+    "section": "Selection guides",
+    "oldPath": "/knowledge/selection/"
+  },
+  "maintenance": {
+    "page": "knowledge",
+    "section": "Maintenance guides",
+    "oldPath": "/knowledge/maintenance/"
+  }
+}

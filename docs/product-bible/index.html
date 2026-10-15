@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FHS 网站设定集</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: spec binder — chapter rail on the left, reading column in the middle, in-chapter index on the right */
+:root{
+  --paper:#f5f7f6; --sheet:#ffffff; --ink:#18211f; --muted:#5b6865; --rule:#d9e0de;
+  --accent:#1d6670; --accent-soft:#e3f0f1; --star:#b7791f;
+  --ok:#2f7a4b; --ok-soft:#e4f2e9; --warn:#a4620b; --warn-soft:#fbefdc; --todo:#5b6865; --todo-soft:#eceff0;
+  --code-bg:#eef2f1;
+  --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-display:"Barlow Semi Condensed","Noto Sans SC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111716; --sheet:#161e1c; --ink:#e3ebe8; --muted:#94a3a0; --rule:#2a3532;
+  --accent:#5fb7c1; --accent-soft:#1b2e31; --star:#e0a84a;
+  --ok:#6cc08b; --ok-soft:#1a2e22; --warn:#e7a54a; --warn-soft:#33270f; --todo:#a3b0ad; --todo-soft:#222b29;
+  --code-bg:#1d2725; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#111716; --sheet:#161e1c; --ink:#e3ebe8; --muted:#94a3a0; --rule:#2a3532;
+  --accent:#5fb7c1; --accent-soft:#1b2e31; --star:#e0a84a;
+  --ok:#6cc08b; --ok-soft:#1a2e22; --warn:#e7a54a; --warn-soft:#33270f; --todo:#a3b0ad; --todo-soft:#222b29;
+  --code-bg:#1d2725; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr) 210px;gap:32px;width:100%;margin:0 auto;padding-block:24px 64px}
+@media (max-width:1180px){.shell{grid-template-columns:230px minmax(0,1fr)}.toc{display:none}}
+@media (max-width:820px){.shell{grid-template-columns:minmax(0,1fr);gap:16px;padding-block:12px 48px}.rail{display:none}}
+
+/* Rail */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding-right:4px}
+.brand{display:flex;flex-direction:column;gap:2px;padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--rule)}
+.brand b{font-family:var(--f-display);font-size:26px;letter-spacing:.04em;line-height:1}
+.brand span{color:var(--muted);font-size:12.5px}
+.rail nav{display:flex;flex-direction:column;gap:2px}
+.rail a{display:grid;grid-template-columns:30px minmax(0,1fr);gap:6px;align-items:baseline;padding:7px 8px;border-radius:6px;text-decoration:none;color:var(--ink)}
+.rail a .no{font-family:var(--f-display);font-weight:600;color:var(--muted);font-size:15px}
+.rail a .t{display:flex;flex-direction:column;line-height:1.35}
+.rail a .t small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.rail a.draft .t>span{color:var(--muted)}
+.rail a:hover{background:var(--accent-soft)}
+.rail a[aria-current="page"]{background:var(--accent-soft)}
+.rail a[aria-current="page"] .no{color:var(--accent)}
+.rail .group{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 8px 4px}
+
+/* Mobile bar */
+.mbar{display:none;gap:10px;align-items:center;padding-block:8px;border-bottom:1px solid var(--rule)}
+.mbar b{font-family:var(--f-display);font-size:20px;letter-spacing:.04em}
+.mbar select{flex:1;min-width:0;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);color:var(--ink)}
+@media (max-width:820px){.mbar{display:flex}}
+
+/* Article */
+article{min-width:0;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:36px clamp(18px,4vw,52px) 48px;font-size:1rem;font-weight:400;line-height:1.95;letter-spacing:.012em;font-kerning:normal;text-rendering:optimizeLegibility;line-break:strict}
+article .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-bottom:6px}
+article h1{font-size:1.875rem;font-weight:700;line-height:1.4;margin:0 0 24px;text-wrap:balance;letter-spacing:0}
+article h2{font-size:1.375rem;font-weight:600;line-height:1.5;margin:44px 0 16px;padding-top:20px;border-top:1px solid var(--rule);text-wrap:balance;letter-spacing:0}
+article h3{font-size:1.125rem;font-weight:600;line-height:1.6;margin:30px 0 10px;letter-spacing:0}
+article h4{font-size:1rem;font-weight:600;line-height:1.7;margin:24px 0 8px}
+article p,article li{max-width:100%}
+article :is(p,li,td,th,blockquote) strong{font-weight:600;background:color-mix(in srgb,var(--muted) 18%,var(--sheet));color:var(--ink);padding:0 .14em;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+article p{margin:.85em 0}
+article ul,article ol{padding-inline-start:1.55em;margin-block:.85em 1.1em}
+article li+li{margin-block-start:.4em}
+article li::marker{color:var(--muted);font-weight:500}
+article a{text-underline-offset:.2em;text-decoration-thickness:1px}
+article ::selection{background:var(--accent-soft);color:var(--ink)}
+article :is(.meta,pre,code,.chart-title,.chart-note,.chart-legend){letter-spacing:normal}
+@media(max-width:820px){article{line-height:1.85;letter-spacing:.008em}}
+.star{display:inline-block;font-size:.8em;color:var(--star);margin-left:6px;vertical-align:.1em}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+code.pill{font-family:var(--f-body);font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px;white-space:nowrap}
+code.pill.ok{background:var(--ok-soft);color:var(--ok)}
+code.pill.warn{background:var(--warn-soft);color:var(--warn)}
+code.pill.todo{background:var(--todo-soft);color:var(--todo)}
+pre{background:var(--code-bg);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:13px}
+pre code{background:none;padding:0}
+blockquote{margin:16px 0;padding:10px 16px;border-left:3px solid var(--rule);color:var(--ink);background:var(--paper);border-radius:0 6px 6px 0}
+blockquote p{margin:4px 0}
+.callout{margin:18px 0;padding:12px 16px;border-radius:8px;border:1px solid var(--rule);background:var(--paper)}
+.callout .ct{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:2px}
+.callout p{margin:4px 0}
+.callout.note{border-color:color-mix(in srgb,var(--accent) 35%,var(--rule))}.callout.note .ct{color:var(--accent)}
+.callout.tip{border-color:color-mix(in srgb,var(--ok) 35%,var(--rule))}.callout.tip .ct{color:var(--ok)}
+.callout.warning{border-color:color-mix(in srgb,var(--warn) 40%,var(--rule))}.callout.warning .ct{color:var(--warn)}
+.callout.todo{border-style:dashed}.callout.todo .ct{color:var(--todo)}
+.tbl{overflow-x:auto;margin:14px 0;border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.875rem;line-height:1.75;letter-spacing:0;font-variant-numeric:lining-nums tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--rule)}
+th{background:var(--paper);font-weight:500;color:var(--muted);font-size:12.5px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:500}
+.diagram{margin:20px 0;padding:16px;border:1px solid var(--rule);border-radius:8px;overflow-x:auto;background:var(--sheet);text-align:center}
+.diagram svg{max-width:100%;height:auto}
+.diagram.err{text-align:left;font-family:var(--f-mono);font-size:12px;color:var(--warn)}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;padding-top:18px;border-top:1px solid var(--rule)}
+.pager a{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);padding:10px 14px;border:1px solid var(--rule);border-radius:8px;min-width:0;max-width:48%}
+.pager a small{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.pager a.next{text-align:right;margin-left:auto}
+.pager a:hover{border-color:var(--accent)}
+.loading,.failed{color:var(--muted);padding:40px 0}
+.failed code{white-space:pre-wrap}
+
+/* TOC */
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto;font-size:13px}
+.toc .lbl{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.toc a{display:block;padding:4px 0 4px 10px;border-left:2px solid var(--rule);color:var(--muted);text-decoration:none;line-height:1.45}
+.toc a.h3{padding-left:22px;font-size:12.5px}
+.toc a:hover,.toc a.on{color:var(--accent);border-left-color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+
+/* Research blocks stay in the existing binder palette. */
+code.pill.src-tool,code.pill.src-web,code.pill.src-judge{background:transparent;border:1px solid currentColor;font-size:11px}
+code.pill.src-tool{color:var(--accent)}code.pill.src-web{color:var(--muted)}code.pill.src-judge{color:var(--star)}
+article img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:8px;margin-block:12px}
+article,.meta,.pager a,.diagram,.data-table{overflow-wrap:anywhere;min-width:0}
+.chart-title{text-align:left;font-weight:600;font-size:14px;margin-bottom:14px}
+.chart-note{font-size:12px;color:var(--muted);text-align:left;line-height:1.6}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:11px;text-align:left;margin-top:10px}
+.chart-legend span{display:inline-flex;gap:5px;align-items:center}.chart-legend i{display:inline-block;width:10px;height:10px;border-radius:2px}
+.reader-table{table-layout:fixed}
+.reader-table th{white-space:normal;font-size:.8125rem;line-height:1.6}
+.reader-table :is(th,td){padding:12px 14px;overflow-wrap:anywhere}
+.reader-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.reader-table td.num{white-space:nowrap;overflow-wrap:normal}
+.reader-table td[data-column-kind="prose"]{font-weight:400;line-height:1.85}
+.reader-table td[data-column-kind="identity"]{font-weight:500}
+.reader-table tbody tr:hover{background:var(--paper)}
+.reader-table a{word-break:normal;text-decoration-thickness:1px;text-underline-offset:.2em}
+.data-table th button{border:0;background:none;color:inherit;font:inherit;cursor:pointer;padding:0;text-align:inherit}
+.show-all,.theme-button{color:var(--accent);background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+.theme-button{margin-top:8px;align-self:flex-start}.mbar .theme-button{margin:0;flex-shrink:0}
+@media(max-width:600px){.diagram{padding:10px}.meta{font-size:10px}article h1{font-size:26px}.pager a{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="mbar"><b>FHS</b><label for="chapterSelect" hidden>章节</label><select id="chapterSelect"></select><button type="button" class="theme-button" data-theme-toggle>明暗</button></div>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand"><b>FHS</b><span>网站设定集 · Website Bible</span><button type="button" class="theme-button" data-theme-toggle>切换主题</button></div>
+    <nav id="nav" aria-label="章节"></nav>
+  </aside>
+  <article id="doc" aria-live="polite"><div class="loading">正在载入……</div></article>
+  <aside class="toc" id="toc"></aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="markdown-reader.js"></script>
+<script src="reader-tables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="research-reader.js"></script>
+<script>
+// 章节清单：新增章节时在这里加一行，并把 md 放进 content/ 目录
+const CHAPTERS = [
+  {id:"c00", no:"00", title:"使用说明", en:"Read me", file:"content/00-readme.md", group:"导读"},
+  {id:"c01", no:"01", title:"战略层", en:"Strategy", file:"content/01-strategy.md", group:"策略"},
+  {id:"c02", no:"02", title:"用户层", en:"Audience", file:"content/02-audience.md", group:"策略"},
+  {id:"c03", no:"03", title:"信息层", en:"Messaging", file:"content/03-messaging.md", group:"策略"},
+  {id:"c04", no:"04", title:"品牌表达层", en:"Brand Expression", file:"content/04-brand-expression.md", group:"策略"},
+  {id:"c05", no:"05", title:"网站结构层", en:"Information Architecture", file:"content/05-information-architecture.md", group:"执行"},
+  {id:"c06", no:"06", title:"内容层", en:"Content Strategy", file:"content/06-content-strategy.md", group:"执行"},
+  {id:"c07", no:"07", title:"转化层", en:"Conversion", file:"content/07-conversion.md", group:"执行"},
+  {id:"c08", no:"08", title:"技术 SEO 层", en:"Technical SEO", file:"content/08-technical-seo.md", group:"执行"},
+  {id:"c09", no:"09", title:"度量层", en:"Measurement", file:"content/09-measurement.md", group:"执行"},
+  {id:"c10", no:"10", title:"竞品对标", en:"Competitive Benchmarking", file:"content/10-competitive-benchmarking.md", group:"对标与治理"},
+  {id:"c11", no:"11", title:"治理", en:"Governance", file:"content/11-governance.md", group:"对标与治理"},
+  {id:"r7", no:"R7", title:"研究综合结论", en:"Research Synthesis", file:"content/R7-synthesis.md", group:"市场研究"},
+  {id:"ia-map", no:"IA", title:"IA Map 页面明细", en:"IA Map v2.1", file:"content/ia-map.md", group:"附录"},
+];
+
+const nav = document.getElementById("nav"), doc = document.getElementById("doc"),
+      toc = document.getElementById("toc"), sel = document.getElementById("chapterSelect");
+const cache = {};
+
+function buildNav(){
+  let g = "";
+  CHAPTERS.forEach(c => {
+    if (c.group !== g){ g = c.group; const d = document.createElement("div"); d.className = "group"; d.textContent = g; nav.appendChild(d); }
+    const a = document.createElement("a");
+    a.href = "#" + c.id; a.dataset.id = c.id; if (c.draft) a.classList.add("draft");
+    a.innerHTML = `<span class="no">${c.no}</span><span class="t"><span>${c.title}</span><small>${c.en}${c.draft ? " · 待写" : ""}</small></span>`;
+    nav.appendChild(a);
+    const o = document.createElement("option"); o.value = c.id; o.textContent = `${c.no} ${c.title}${c.draft ? "（待写）" : ""}`; sel.appendChild(o);
+  });
+  sel.addEventListener("change", () => { location.hash = sel.value; });
+}
+
+const STATUS = {"已定":"ok","待确认":"warn","待写":"todo","工具数据":"src-tool","网页展示":"src-web","分析判断":"src-judge"};
+const CALLOUT = {NOTE:["note","说明"],TIP:["tip","提示"],WARNING:["warning","注意"],TODO:["todo","待写"]};
+
+function isDark(){
+  const t = document.documentElement.getAttribute("data-theme");
+  if (t) return t === "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function tok(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function initMermaid(){
+  if (!window.mermaid) return;
+  mermaid.initialize({startOnLoad:false, securityLevel:"strict", theme:"base",
+    fontFamily:'"Noto Sans SC", system-ui, sans-serif',
+    themeVariables:{
+      background: tok("--sheet"), primaryColor: tok("--accent-soft"), primaryBorderColor: tok("--accent"),
+      primaryTextColor: tok("--ink"), lineColor: tok("--muted"), textColor: tok("--ink"),
+      secondaryColor: tok("--paper"), tertiaryColor: tok("--paper"), clusterBkg: tok("--paper"), clusterBorder: tok("--rule"),
+      edgeLabelBackground: tok("--sheet"), fontSize:"14px",
+      quadrant1Fill: tok("--accent-soft"), quadrant2Fill: tok("--paper"), quadrant3Fill: tok("--paper"), quadrant4Fill: tok("--paper"),
+      quadrant1TextFill: tok("--ink"), quadrant2TextFill: tok("--ink"), quadrant3TextFill: tok("--ink"), quadrant4TextFill: tok("--ink"),
+      quadrantPointFill: tok("--accent"), quadrantPointTextFill: tok("--ink"), quadrantXAxisTextFill: tok("--muted"),
+      quadrantYAxisTextFill: tok("--muted"), quadrantTitleFill: tok("--ink"), quadrantInternalBorderStrokeFill: tok("--rule"),
+      quadrantExternalBorderStrokeFill: tok("--rule")
+    }});
+}
+
+function render(md){
+  // 把 ```mermaid 代码块换成图表容器
+  const renderer = new marked.Renderer();
+  const baseCode = renderer.code.bind(renderer);
+  renderer.code = (code, lang) => {
+    if (["chart","table"].includes((lang || "").trim())){
+      const kind=lang.trim(); return `<div class="${kind==='chart'?'diagram':'data-table'}" data-${kind}="${encodeURIComponent(code)}"></div>`;
+    }
+    if ((lang || "").trim() === "quadrant"){
+      return `<div class="diagram quad" data-quad="${encodeURIComponent(code)}"></div>`;
+    }
+    if ((lang || "").trim() === "mermaid"){
+      const src = code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return `<div class="diagram" data-src="${encodeURIComponent(code)}"><pre class="mm-src">${src}</pre></div>`;
+    }
+    return baseCode(code, lang);
+  };
+  const html = marked.parse(md, {renderer, gfm:true});
+  const safe = DOMPurify.sanitize(html, {ADD_ATTR:["data-src","data-quad","data-chart","data-table"]});
+  const wrap = document.createElement("div"); wrap.innerHTML = safe;
+
+  // 提示块：> [!NOTE] 等
+  wrap.querySelectorAll("blockquote").forEach(bq => {
+    const p = bq.querySelector("p"); if (!p) return;
+    const m = p.innerHTML.match(/^\s*\[!(NOTE|TIP|WARNING|TODO)\]\s*(<br>)?/);
+    if (!m) return;
+    const [cls, label] = CALLOUT[m[1]];
+    p.innerHTML = p.innerHTML.slice(m[0].length);
+    if (!p.textContent.trim()) p.remove();
+    const d = document.createElement("div"); d.className = "callout " + cls;
+    d.innerHTML = `<div class="ct">${label}</div>`; while (bq.firstChild) d.appendChild(bq.firstChild);
+    bq.replaceWith(d);
+  });
+  // 状态标记
+  wrap.querySelectorAll("code").forEach(c => {
+    if (c.closest("pre")) return;
+    const k = STATUS[c.textContent.trim()]; if (k){ c.classList.add("pill", k); }
+  });
+  // 表格包一层，窄屏横向滚动
+  wrap.querySelectorAll("table").forEach(t => { const d = document.createElement("div"); d.className = "tbl"; t.replaceWith(d); d.appendChild(t); enhanceReaderTable(t); });
+  // 标题锚点与 ★
+  let n = 0;
+  wrap.querySelectorAll("h2,h3").forEach(h => {
+    h.id = "s" + (++n);
+    if (h.textContent.includes("★")){ h.innerHTML = h.innerHTML.replace("★","").trim() + '<span class="star" title="可横向对比竞品">★</span>'; }
+  });
+  wrap.querySelectorAll('a[href^="http"]').forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+  wrap.querySelectorAll("img").forEach(img=>{img.loading="lazy"; if(!img.closest("a")){const a=document.createElement("a");a.href=img.src;a.target="_blank";a.rel="noopener";img.replaceWith(a);a.append(img);}});
+  return wrap;
+}
+
+// 四象限图：```quadrant 代码块
+// title: 标题 / x: 左端 -> 右端 / y: 下端 -> 上端 / q1..q4: 右上、左上、左下、右下 / point: 名称 | x | y
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function drawQuadrant(src){
+  const spec = {pts:[]};
+  src.split("\n").forEach(l => {
+    const m = l.match(/^\s*(\w+)\s*:\s*(.+)$/); if (!m) return;
+    const k = m[1].toLowerCase(), v = m[2].trim();
+    if (k === "point"){ const [n,x,y] = v.split("|").map(s => s.trim()); spec.pts.push({n, x:+x, y:+y}); }
+    else spec[k] = v;
+  });
+  const W = 480, H = 450, L = 64, T = 52, S = 360, R = L + S, B = T + S;
+  const [xl, xr] = (spec.x || "低 -> 高").split("->").map(s => s.trim());
+  const [yb, yt] = (spec.y || "低 -> 高").split("->").map(s => s.trim());
+  const half = S / 2;
+  let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(spec.title || "四象限图")}" font-family="Noto Sans SC, system-ui, sans-serif">`;
+  g += `<text x="${L}" y="28" font-size="15" font-weight="700" fill="var(--ink)">${esc(spec.title || "")}</text>`;
+  const quad = (x, y, fill, label) => `<rect x="${x}" y="${y}" width="${half}" height="${half}" fill="${fill}" stroke="var(--rule)"/><text x="${x + half/2}" y="${y + 22}" text-anchor="middle" font-size="12.5" font-weight="500" fill="var(--muted)">${esc(label || "")}</text>`;
+  g += quad(L + half, T, "var(--accent-soft)", spec.q1);
+  g += quad(L, T, "var(--paper)", spec.q2);
+  g += quad(L, T + half, "var(--paper)", spec.q3);
+  g += quad(L + half, T + half, "var(--paper)", spec.q4);
+  g += `<text x="${L}" y="${B + 22}" font-size="12" fill="var(--muted)">← ${esc(xl)}</text>`;
+  g += `<text x="${R}" y="${B + 22}" text-anchor="end" font-size="12" fill="var(--muted)">${esc(xr)} →</text>`;
+  g += `<text transform="translate(${L - 14} ${B}) rotate(-90)" font-size="12" fill="var(--muted)">← ${esc(yb)}</text>`;
+  g += `<text transform="translate(${L - 14} ${T}) rotate(-90)" text-anchor="end" font-size="12" fill="var(--muted)">${esc(yt)} →</text>`;
+  spec.pts.forEach(p => {
+    const cx = L + p.x * S, cy = B - p.y * S, right = p.x < 0.72;
+    g += `<circle cx="${cx}" cy="${cy}" r="5.5" fill="var(--accent)"/>`;
+    g += `<text x="${right ? cx + 10 : cx - 10}" y="${cy + 4}" text-anchor="${right ? "start" : "end"}" font-size="12.5" fill="var(--ink)">${esc(p.n)}</text>`;
+  });
+  return g + "</svg>";
+}
+
+async function drawDiagrams(root){
+  await drawResearchBlocks(root);
+  root.querySelectorAll(".diagram[data-quad]").forEach(d => {
+    if(parseResearchSpec(decodeURIComponent(d.dataset.quad)).data) return;
+    try{ d.innerHTML = drawQuadrant(decodeURIComponent(d.dataset.quad)); }
+    catch(e){ d.classList.add("err"); d.textContent = "图表渲染失败：" + e.message; }
+  });
+  const nodes = root.querySelectorAll(".diagram[data-src]");
+  if (!nodes.length) return;
+  if (!window.mermaid){ nodes.forEach(d => d.classList.add("err")); return; }
+  initMermaid();
+  let i = 0;
+  for (const d of nodes){
+    const src = decodeURIComponent(d.dataset.src);
+    try{
+      const {svg} = await mermaid.render("mm" + Date.now() + (i++), src);
+      d.innerHTML = svg;
+    }catch(e){
+      d.classList.add("err");
+      d.textContent = "图表渲染失败：" + (e && e.message ? e.message : e);
+    }
+  }
+}
+
+function buildToc(root){
+  const hs = root.querySelectorAll("h2,h3");
+  toc.innerHTML = hs.length ? '<div class="lbl">本章目录</div>' : "";
+  hs.forEach(h => {
+    const a = document.createElement("a");
+    a.href = "#" + currentId(); a.textContent = h.textContent.replace("★","").trim(); a.className = h.tagName.toLowerCase();
+    a.addEventListener("click", e => { e.preventDefault(); h.scrollIntoView({block:"start"}); });
+    toc.appendChild(a);
+  });
+}
+
+function currentId(){
+  const requested = location.hash.slice(1);
+  const h = ({"c-r7":"r7","c-ia":"ia-map"})[requested] || requested;
+  return CHAPTERS.some(c => c.id === h) ? h : CHAPTERS[0].id;
+}
+
+let loadVersion=0;
+async function load(){
+  const version=++loadVersion; doc.dataset.ready="loading";
+  const id = currentId(), idx = CHAPTERS.findIndex(c => c.id === id), c = CHAPTERS[idx];
+  nav.querySelectorAll("a").forEach(a => { if (a.dataset.id === id) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  sel.value = id;
+  doc.innerHTML = '<div class="loading">正在载入……</div>';
+  try{
+    if (!cache[id]){
+      const r = await fetch(c.file, {cache:"no-cache"});
+      if (!r.ok) throw new Error(r.status + " " + r.statusText);
+      cache[id] = await r.text();
+    }
+    if(version!==loadVersion) return;
+    const body = render(cache[id]);
+    const meta = document.createElement("div"); meta.className = "meta";
+    meta.innerHTML = `<span>第 ${c.no} 部分</span><span>${c.en}</span><span>${c.file}</span>`;
+    doc.innerHTML = ""; doc.appendChild(meta); doc.appendChild(body);
+    const pager = document.createElement("div"); pager.className = "pager";
+    const prev = CHAPTERS[idx-1], next = CHAPTERS[idx+1];
+    if (prev) pager.innerHTML += `<a class="prev" href="#${prev.id}"><small>上一部分</small>${prev.no} ${prev.title}</a>`;
+    if (next) pager.innerHTML += `<a class="next" href="#${next.id}"><small>下一部分</small>${next.no} ${next.title}</a>`;
+    doc.appendChild(pager);
+    buildToc(body);
+    window.scrollTo(0,0);
+    await drawDiagrams(body);
+    if(version===loadVersion) doc.dataset.ready=id;
+  }catch(e){
+    doc.innerHTML = `<div class="failed"><p>没能读取 <code>${c.file}</code>（${e.message}）。</p>
+      <p>如果是直接双击打开的 index.html，浏览器会拦截本地文件读取。请在设定集目录下运行 <code>python3 -m http.server 8000</code>，再打开 <code>http://localhost:8000</code>。</p></div>`;
+    toc.innerHTML = "";
+  }
+}
+
+// 章内目录高亮
+const spy = () => {
+  const links = toc.querySelectorAll("a"); if (!links.length) return;
+  const hs = doc.querySelectorAll("h2,h3"); let on = 0;
+  hs.forEach((h,i) => { if (h.getBoundingClientRect().top < 120) on = i; });
+  links.forEach((a,i) => a.classList.toggle("on", i === on));
+};
+window.addEventListener("scroll", spy, {passive:true});
+window.addEventListener("hashchange", load);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", load);
+new MutationObserver(load).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+document.querySelectorAll("[data-theme-toggle]").forEach(b=>b.addEventListener("click",()=>{document.documentElement.dataset.theme=isDark()?"light":"dark";}));
+buildNav();
+load();
+</script>
+</body>
+</html>
