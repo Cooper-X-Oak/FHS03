@@ -1,2 +1,11 @@
-import { pageById } from '@/lib/sitemap';
-export default function NotFound() {return <main id="main" className="section"><div className="container"><p className="type-label-caps">FHS Filtration</p><h1 className="type-h1">We could not find that page.</h1><p>The page may still be in preparation. You can start at our home page or send us your filter request.</p><p><a href={pageById('home').path}>Go to FHS Filtration home</a></p><a href={`${pageById('quote').path}?sourcePage=%2F`}>Send a filter request</a></div></main>;}
+export default function NotFound() {
+  return (
+    <main id="main" className="section">
+      <div className="container">
+        <p className="type-label-caps">FHS Filtration</p>
+        <h1 className="type-h1">We could not find that page.</h1>
+        <a href="mailto:sales@fhsfiltration.com">Email your filter request</a>
+      </div>
+    </main>
+  );
+}

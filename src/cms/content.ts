@@ -1,32 +1,81 @@
-import { getPayload } from 'payload';
-import config from '../payload.config';
-import type { PageContent } from '../content/types';
-import { pages, allPages, currentPageId, handoffMap } from '../lib/sitemap';
+import { getPayload } from "payload";
+import config from "../payload.config";
+import type { PageContent } from "../content/types";
+import { pages, allPages, currentPageId, handoffMap } from "../lib/sitemap";
 
 export const cms = () => getPayload({ config });
 export function encodeContent(content: PageContent) {
-  return { ...content, sections: content.sections.map(section => ({ ...section, paragraphs: section.paragraphs.map(text => ({ text })) })), selection: content.selection?.map(text => ({ text })), mistakes: content.mistakes?.map(text => ({ text })) };
+  return {
+    ...content,
+    sections: content.sections.map((section) => ({
+      ...section,
+      paragraphs: section.paragraphs.map((text) => ({ text })),
+    })),
+    selection: content.selection?.map((text) => ({ text })),
+    mistakes: content.mistakes?.map((text) => ({ text })),
+  };
 }
 export type StoredContent = ReturnType<typeof encodeContent>;
 export function decodeContent(content: StoredContent): PageContent {
-  return { ...content, sections: (content.sections || []).map(section => ({ ...section, paragraphs: (section.paragraphs || []).map(item => item.text) })), selection: content.selection?.map(item => item.text), mistakes: content.mistakes?.map(item => item.text) };
+  return {
+    ...content,
+    sections: (content.sections || []).map((section) => ({
+      ...section,
+      paragraphs: (section.paragraphs || []).map((item) => item.text),
+    })),
+    selection: content.selection?.map((item) => item.text),
+    mistakes: content.mistakes?.map((item) => item.text),
+  };
 }
 export async function assertPageCoverage() {
   const payload = await cms();
-  const result = await payload.find({ collection: 'pages', limit: 1000, depth: 0, locale: 'en', draft: false, overrideAccess: true });
-  const active = result.docs.filter(doc => !handoffMap[doc.pageId] && !allPages.some(p => p.id === doc.pageId && p.stage === 'planned'));
-  const actual = active.map(doc => currentPageId(String(doc.pageId)));
-  const expected = pages.map(page => page.id);
-  const missing = expected.filter(id => !actual.includes(id));
-  const extra = actual.filter(id => !expected.includes(id));
-  if (missing.length || extra.length || actual.length !== expected.length) throw new Error(`CMS/SITEMAP mismatch. Missing: ${missing.join(', ')}; extra: ${extra.join(', ')}`);
+  const result = await payload.find({
+    collection: "pages",
+    limit: 1000,
+    depth: 0,
+    locale: "en",
+    draft: true,
+    overrideAccess: true,
+  });
+  const active = result.docs.filter(
+    (doc) =>
+      !handoffMap[doc.pageId] &&
+      !allPages.some((p) => p.id === doc.pageId && p.stage === "planned"),
+  );
+  const actual = active.map((doc) => currentPageId(String(doc.pageId)));
+  const expected = pages.map((page) => page.id);
+  const missing = expected.filter((id) => !actual.includes(id));
+  const extra = actual.filter((id) => !expected.includes(id));
+  if (missing.length || extra.length || actual.length !== expected.length)
+    throw new Error(
+      `CMS/SITEMAP mismatch. Missing: ${missing.join(", ")}; extra: ${extra.join(", ")}`,
+    );
   return active;
 }
-export async function getPageContent(id: string): Promise<PageContent> {
+export async function getPageContent(
+  id: string,
+  draft = false,
+): Promise<PageContent> {
   const payload = await cms();
-  const result = await payload.find({ collection: 'pages', where: { pageId: { equals: id } }, locale: 'en', fallbackLocale: false, draft: false, limit: 1, depth: 1, overrideAccess: true });
+  const result = await payload.find({
+    collection: "pages",
+    where: { pageId: { equals: id } },
+    locale: "en",
+    fallbackLocale: false,
+    draft,
+    limit: 1,
+    depth: 1,
+    overrideAccess: true,
+  });
   const doc = result.docs[0];
-  if (!doc?.content) throw new Error(`Missing published English CMS content: ${id}`);
+  if (!doc?.content)
+    throw new Error(`Missing published English CMS content: ${id}`);
   const content = decodeContent(doc.content as StoredContent);
-  return {...content, stages: content.stages?.map(stage => ({...stage, products: [...new Set(stage.products.map(currentPageId))]}))};
+  return {
+    ...content,
+    stages: content.stages?.map((stage) => ({
+      ...stage,
+      products: [...new Set(stage.products.map(currentPageId))],
+    })),
+  };
 }

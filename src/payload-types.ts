@@ -312,7 +312,19 @@ export interface Page {
         id?: string | null;
       }[]
     | null;
-  content: {
+  content?: {
+    /**
+     * Optional article metadata: publishedAt, modifiedAt (ISO dates), author. Use verified publication dates only.
+     */
+    article?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
     seoTitle?: string | null;
     request_hint?: string | null;
     gallery?:
@@ -336,8 +348,8 @@ export interface Page {
       | number
       | boolean
       | null;
-    description: string;
-    intro: string;
+    description?: string | null;
+    intro?: string | null;
     sections?:
       | {
           heading: string;
@@ -380,29 +392,6 @@ export interface Page {
     stages?:
       | {
           title: string;
-          seoTitle?: string | null;
-          request_hint?: string | null;
-          gallery?:
-            | {
-                image: number | Media;
-                kind: 'overall' | 'end-cap' | 'detail' | 'dimensions';
-                caption?: string | null;
-                id?: string | null;
-              }[]
-            | null;
-          processImage?: (number | null) | Media;
-          /**
-           * Module keyed content: M04, M09, M12, M15, M16, M27. Arrays of {heading, paragraphs, table?, productIds?}. Empty modules are hidden.
-           */
-          moduleContent?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
           description: string;
           products?:
             | (
@@ -451,29 +440,6 @@ export interface Page {
     supply?:
       | {
           title: string;
-          seoTitle?: string | null;
-          request_hint?: string | null;
-          gallery?:
-            | {
-                image: number | Media;
-                kind: 'overall' | 'end-cap' | 'detail' | 'dimensions';
-                caption?: string | null;
-                id?: string | null;
-              }[]
-            | null;
-          processImage?: (number | null) | Media;
-          /**
-           * Module keyed content: M04, M09, M12, M15, M16, M27. Arrays of {heading, paragraphs, table?, productIds?}. Empty modules are hidden.
-           */
-          moduleContent?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
           description: string;
           id?: string | null;
         }[]
@@ -487,6 +453,9 @@ export interface Page {
         }[]
       | null;
     formPrompt?: string | null;
+    /**
+     * Article ID to {category, industry, intent}; labels power archive filters.
+     */
     topics?:
       | {
           [k: string]: unknown;
@@ -647,7 +616,19 @@ export interface News {
   title: string;
   slug: string;
   date: string;
-  content: {
+  content?: {
+    /**
+     * Optional article metadata: publishedAt, modifiedAt (ISO dates), author. Use verified publication dates only.
+     */
+    article?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
     seoTitle?: string | null;
     request_hint?: string | null;
     gallery?:
@@ -671,8 +652,8 @@ export interface News {
       | number
       | boolean
       | null;
-    description: string;
-    intro: string;
+    description?: string | null;
+    intro?: string | null;
     sections?:
       | {
           heading: string;
@@ -715,29 +696,6 @@ export interface News {
     stages?:
       | {
           title: string;
-          seoTitle?: string | null;
-          request_hint?: string | null;
-          gallery?:
-            | {
-                image: number | Media;
-                kind: 'overall' | 'end-cap' | 'detail' | 'dimensions';
-                caption?: string | null;
-                id?: string | null;
-              }[]
-            | null;
-          processImage?: (number | null) | Media;
-          /**
-           * Module keyed content: M04, M09, M12, M15, M16, M27. Arrays of {heading, paragraphs, table?, productIds?}. Empty modules are hidden.
-           */
-          moduleContent?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
           description: string;
           products?:
             | (
@@ -786,29 +744,6 @@ export interface News {
     supply?:
       | {
           title: string;
-          seoTitle?: string | null;
-          request_hint?: string | null;
-          gallery?:
-            | {
-                image: number | Media;
-                kind: 'overall' | 'end-cap' | 'detail' | 'dimensions';
-                caption?: string | null;
-                id?: string | null;
-              }[]
-            | null;
-          processImage?: (number | null) | Media;
-          /**
-           * Module keyed content: M04, M09, M12, M15, M16, M27. Arrays of {heading, paragraphs, table?, productIds?}. Empty modules are hidden.
-           */
-          moduleContent?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
           description: string;
           id?: string | null;
         }[]
@@ -822,6 +757,9 @@ export interface News {
         }[]
       | null;
     formPrompt?: string | null;
+    /**
+     * Article ID to {category, industry, intent}; labels power archive filters.
+     */
     topics?:
       | {
           [k: string]: unknown;
@@ -1139,6 +1077,7 @@ export interface PagesSelect<T extends boolean = true> {
   content?:
     | T
     | {
+        article?: T;
         seoTitle?: T;
         request_hint?: T;
         gallery?:
@@ -1185,18 +1124,6 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
-              seoTitle?: T;
-              request_hint?: T;
-              gallery?:
-                | T
-                | {
-                    image?: T;
-                    kind?: T;
-                    caption?: T;
-                    id?: T;
-                  };
-              processImage?: T;
-              moduleContent?: T;
               description?: T;
               products?: T;
               id?: T;
@@ -1217,18 +1144,6 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
-              seoTitle?: T;
-              request_hint?: T;
-              gallery?:
-                | T
-                | {
-                    image?: T;
-                    kind?: T;
-                    caption?: T;
-                    id?: T;
-                  };
-              processImage?: T;
-              moduleContent?: T;
               description?: T;
               id?: T;
             };
@@ -1301,6 +1216,7 @@ export interface NewsSelect<T extends boolean = true> {
   content?:
     | T
     | {
+        article?: T;
         seoTitle?: T;
         request_hint?: T;
         gallery?:
@@ -1347,18 +1263,6 @@ export interface NewsSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
-              seoTitle?: T;
-              request_hint?: T;
-              gallery?:
-                | T
-                | {
-                    image?: T;
-                    kind?: T;
-                    caption?: T;
-                    id?: T;
-                  };
-              processImage?: T;
-              moduleContent?: T;
               description?: T;
               products?: T;
               id?: T;
@@ -1379,18 +1283,6 @@ export interface NewsSelect<T extends boolean = true> {
           | T
           | {
               title?: T;
-              seoTitle?: T;
-              request_hint?: T;
-              gallery?:
-                | T
-                | {
-                    image?: T;
-                    kind?: T;
-                    caption?: T;
-                    id?: T;
-                  };
-              processImage?: T;
-              moduleContent?: T;
               description?: T;
               id?: T;
             };

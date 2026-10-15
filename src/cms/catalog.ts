@@ -1,12 +1,100 @@
-import {isPublicPage,pageById,sitemap,type Page,sectionAnchor} from '../lib/sitemap';
-import {cms} from './content';
-import type {Product} from '../payload-types';
-import type {PageContent} from '../content/types';
-export const catalogPath=(slug:string) => sitemap.collections['catalog-items'].path.replace('{slug}',slug);
-export function catalogSlug(path:string) {const [prefix,suffix]=sitemap.collections['catalog-items'].path.split('{slug}');if(!path.startsWith(prefix)||!path.endsWith(suffix)) return null;const slug=path.slice(prefix.length,suffix ? -suffix.length : undefined);return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : null;}
-export async function catalogModels() {return (await (await cms()).find({collection:'products',where:{and:[{approved:{equals:true}},{slug:{exists:true}}]},pagination:false,locale:'en',fallbackLocale:false,depth:1,overrideAccess:true})).docs.filter(doc=>doc.slug && isPublicPage(pageById(doc.pageId)) && isPublicPage(pageById("catalog")));}
-export async function findModel(slug:string) {return (await catalogModels()).find(doc=>doc.slug===slug);}
-export const modelIndexable=(doc:Product) => Boolean(doc.indexable && doc.model && doc.material && doc.micronRange && (doc.length || doc.sizes) && doc.endCap);
-export function modelPage(doc:Product):Page {const collection=sitemap.collections['catalog-items'];return {id:`catalog:${doc.slug}`,path:catalogPath(doc.slug!),parent:collection.parent,type:collection.type,template:collection.template,variant:'item',stage:'full',cluster:null,label:doc.model,title:`${doc.model} ${doc.name} | FHS Filtration`,h1:`${doc.model} ${doc.name}`,priority:'p2',status:modelIndexable(doc)?'live':'draft',linksTo:[`{pages.${pageById(doc.pageId).id}}`,'{pages.quote}']};}
-export function modelContent(doc:Product):PageContent {return {description:`${doc.model}: ${doc.name}. Send your operating conditions and quantity for a specification review.`.slice(0,155),intro:doc.name,sections:[],specs:[['Model',doc.model],['Material',doc.material],['Micron range',doc.micronRange],['Length',doc.length],['Sizes',doc.sizes],['End cap',doc.endCap],['Seals',doc.seals],['Connections',doc.connections],['Housing fit',doc.housingFit],['Replacement brands',doc.replacementBrands]].filter(([,value])=>value).map(([label,value])=>({label:label!,value:value!}))};}
-export const modelFamilyPath=(doc:Product) => pageById(doc.pageId).path+(doc.section ? `#${sectionAnchor(doc.section)}` : '');
+import {
+  isPublicPage,
+  pageById,
+  sitemap,
+  type Page,
+  sectionAnchor,
+} from "../lib/sitemap";
+import { cms } from "./content";
+import type { Product } from "../payload-types";
+import type { PageContent } from "../content/types";
+export const catalogPath = (slug: string) =>
+  sitemap.collections["catalog-items"].path.replace("{slug}", slug);
+export function catalogSlug(path: string) {
+  const [prefix, suffix] =
+    sitemap.collections["catalog-items"].path.split("{slug}");
+  if (!path.startsWith(prefix) || !path.endsWith(suffix)) return null;
+  const slug = path.slice(prefix.length, suffix ? -suffix.length : undefined);
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ? slug : null;
+}
+export async function catalogModels() {
+  return (
+    await (
+      await cms()
+    ).find({
+      collection: "products",
+      where: {
+        and: [{ approved: { equals: true } }, { slug: { exists: true } }],
+      },
+      pagination: false,
+      locale: "en",
+      fallbackLocale: false,
+      depth: 1,
+      overrideAccess: true,
+    })
+  ).docs.filter(
+    (doc) =>
+      doc.slug &&
+      isPublicPage(pageById(doc.pageId)) &&
+      isPublicPage(pageById("catalog")),
+  );
+}
+export async function findModel(slug: string) {
+  return (await catalogModels()).find((doc) => doc.slug === slug);
+}
+export const modelIndexable = (doc: Product) =>
+  Boolean(
+    doc.indexable &&
+    doc.model &&
+    doc.material &&
+    doc.micronRange &&
+    (doc.length || doc.sizes) &&
+    doc.endCap,
+  );
+export function modelPage(doc: Product): Page {
+  const collection = sitemap.collections["catalog-items"];
+  return {
+    id: `catalog:${doc.slug}`,
+    path: catalogPath(doc.slug!),
+    parent: collection.parent,
+    type: collection.type,
+    template: collection.template,
+    variant: "item",
+    stage: "full",
+    cluster: null,
+    label: doc.model,
+    title: `${doc.model} ${doc.name} | FHS Filtration`,
+    h1: `${doc.model} ${doc.name}`,
+    priority: "p2",
+    status: modelIndexable(doc) ? "live" : "draft",
+    linksTo: [`{pages.${pageById(doc.pageId).id}}`, "{pages.quote}"],
+  };
+}
+export function modelContent(doc: Product): PageContent {
+  return {
+    description:
+      `${doc.model}: ${doc.name}. Send your operating conditions and quantity for a specification review.`.slice(
+        0,
+        155,
+      ),
+    intro: doc.name,
+    sections: [],
+    specs: [
+      ["Model", doc.model],
+      ["Material", doc.material],
+      ["Micron range", doc.micronRange],
+      ["Length", doc.length],
+      ["Sizes", doc.sizes],
+      ["End cap", doc.endCap],
+      ["Seals", doc.seals],
+      ["Connections", doc.connections],
+      ["Housing fit", doc.housingFit],
+      ["Replacement brands", doc.replacementBrands],
+    ]
+      .filter(([, value]) => value)
+      .map(([label, value]) => ({ label: label!, value: value! })),
+  };
+}
+export const modelFamilyPath = (doc: Product) =>
+  pageById(doc.pageId).path +
+  (doc.section ? `#${sectionAnchor(doc.section)}` : "");
