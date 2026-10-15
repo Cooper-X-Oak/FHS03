@@ -1,28 +1,298 @@
-'use client';
-import {useEffect,useRef,useState} from 'react';
-import {firstTouch,trackEvent} from '@/lib/client-events';
-declare global {interface Window {turnstile?:{render:(el:HTMLElement,options:Record<string,unknown>)=>string;remove:(id:string)=>void;reset:(id:string)=>void};}}
-export function QuoteForm({defaultSource,privacyPath,messagePrompt="Model number or a photo of the old filter. Not sure? Tell us what liquid it filters and where it's used.",pageId='',template='',entry='end',formId='contact',full=false,replacement=false,whatsappUrl}:{defaultSource:string;privacyPath?:string;messagePrompt?:string;pageId?:string;template?:string;entry?:string;formId?:string;full?:boolean;replacement?:boolean;whatsappUrl?:string}){
- const ref=useRef<HTMLFormElement>(null);const turnstileRef=useRef<HTMLDivElement>(null);const widget=useRef<string|undefined>(undefined);const started=useRef(false);
- const [busy,setBusy]=useState(false);const [success,setSuccess]=useState(false);const [error,setError]=useState('');const [fields,setFields]=useState<Record<string,string[]>>({});
- useEffect(()=>{const f=ref.current!;const values={...firstTouch(),startedAt:String(Date.now()),page_url:location.origin+location.pathname};for(const [key,value] of Object.entries(values)){const el=f.elements.namedItem(key) as HTMLInputElement|null;if(el)el.value=value;}const q=new URLSearchParams(location.search);for(const key of ['partNumber','message']){const el=f.elements.namedItem(key) as HTMLInputElement|null;if(el&&q.get(key))el.value=q.get(key)!;}
- const sitekey=process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;let cancelled=false;let timer:ReturnType<typeof setTimeout>;
- const render=()=>{if(cancelled)return;if(!window.turnstile){timer=setTimeout(render,150);return;}if(turnstileRef.current)widget.current=window.turnstile.render(turnstileRef.current,{sitekey,appearance:'interaction-only',action:'inquiry'});};
- if(sitekey){if(!document.getElementById('turnstile-script')){const script=document.createElement('script');script.id='turnstile-script';script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';script.async=true;document.head.append(script);}render();}
- return()=>{cancelled=true;clearTimeout(timer);if(widget.current)window.turnstile?.remove(widget.current);};},[]);
- const tracking=()=>({page_id:pageId,template,entry_location:(ref.current?.elements.namedItem('entry_location') as HTMLInputElement)?.value||entry});
- async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();if(busy)return;setBusy(true);setError('');setFields({});try{const response=await fetch('/api/leads/',{method:'POST',body:new FormData(e.currentTarget)});const result=await response.json();if(!response.ok||!result.requestId){setFields(result.fields||{});throw new Error(result.error||'Your request could not be saved.');}trackEvent('form_submit_success',tracking());if(replacement)trackEvent('part_number_submit',tracking());setSuccess(true);}catch(e){setError(e instanceof Error?e.message:'Connection lost. Please try again.');trackEvent('form_submit_error',tracking());if(widget.current)window.turnstile?.reset(widget.current);}finally{setBusy(false);}}
- if(success)return <div role="status" className="form-success"><h2>Got it. Nina will reply within 24 hours.</h2>{whatsappUrl&&<a href={whatsappUrl} data-entry={entry}>WhatsApp</a>}</div>;
- const optional=full?['company','country','whatsappNumber','brand','partNumber','quantity','application']:replacement?['partNumber','quantity']:[];
- const labels:Record<string,string>={name:'Name',email:'Email',company:'Company',country:'Country',whatsappNumber:'WhatsApp number',brand:'Brand',partNumber:'Part number',quantity:'Quantity',application:'Application'};
- return <form ref={ref} className="quote-form" onSubmit={submit} onChange={()=>{if(!started.current){started.current=true;trackEvent('form_start',tracking());}}>
- <p>Only name, email and your request are required.</p>
- {Object.entries({sourcePage:defaultSource,page_id:pageId,template,entry_location:entry,customer_type:template==='T6'?(pageId==='distributors'?'distributor':'integrator'):'',startedAt:'',page_url:'',referrer:'',utm_source:'',utm_medium:'',utm_campaign:'',utm_term:'',utm_content:''}).map(([name,value])=><input key={name} type="hidden" name={name} defaultValue={value}/>)}
- <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
- <div className="form-grid">{['name','email',...optional].map(name=><div className="field" key={name}><label htmlFor={`${formId}-${name}`}>{labels[name]}{['name','email'].includes(name)?' *':' (optional)'}</label><input id={`${formId}-${name}`} name={name} type={name==='email'?'email':'text'} required={['name','email'].includes(name)} maxLength={name==='email'?254:160} aria-invalid={!!fields[name]}/>{fields[name]&&<p className="field-error">{fields[name][0]}</p>}</div>)}</div>
- <div className="field"><label htmlFor={`${formId}-message`}>Your request *</label><textarea id={`${formId}-message`} name="message" required minLength={10} maxLength={8000} placeholder={messagePrompt} aria-invalid={!!fields.message}/>{fields.message&&<p className="field-error">{fields.message[0]}</p>}</div>
- <div className="field"><label htmlFor={`${formId}-files`}>Attach files (optional)</label><input id={`${formId}-files`} name="attachment" type="file" multiple accept=".jpg,.jpeg,.png,.pdf,.xlsx,.csv,.dwg" onChange={e=>{const files=Array.from(e.target.files||[]);e.target.setCustomValidity(files.length>5?'Choose at most 5 files.':files.some(f=>f.size>10*1024*1024)?'Each file must be 10 MB or smaller.':'');if(files.length)trackEvent('file_attach',tracking());}}/><p>JPG, PNG, PDF, XLSX, CSV or DWG. Up to 5 files, 10 MB each.</p>{fields.attachment&&<p className="field-error">{fields.attachment[0]}</p>}</div>
- <div ref={turnstileRef}/>{privacyPath&&<p>We use these details to respond to your request. <a href={privacyPath}>Privacy policy</a></p>}
- {error&&<div role="alert"><p>{error}</p><p>Something went wrong. Email us at <a href="mailto:sales@fhsfiltration.com">sales@fhsfiltration.com</a>{whatsappUrl&&<> or <a href={whatsappUrl}>WhatsApp</a>}</p></div>}
- <button className="button quote-button" type="submit" disabled={busy} data-entry={entry}>{busy?'Sending…':'Send request'}</button></form>;
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { firstTouch, trackEvent } from "@/lib/client-events";
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, options: Record<string, unknown>) => string;
+      remove: (id: string) => void;
+      reset: (id: string) => void;
+    };
+  }
+}
+export function QuoteForm({
+  defaultSource,
+  privacyPath,
+  messagePrompt = "Model number or a photo of the old filter. Not sure? Tell us what liquid it filters and where it's used.",
+  pageId = "",
+  template = "",
+  entry = "end",
+  formId = "contact",
+  full = false,
+  replacement = false,
+  whatsappUrl,
+}: {
+  defaultSource: string;
+  privacyPath?: string;
+  messagePrompt?: string;
+  pageId?: string;
+  template?: string;
+  entry?: string;
+  formId?: string;
+  full?: boolean;
+  replacement?: boolean;
+  whatsappUrl?: string;
+}) {
+  const ref = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widget = useRef<string | undefined>(undefined);
+  const started = useRef(false);
+  const attribution = useRef<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [fields, setFields] = useState<Record<string, string[]>>({});
+  useEffect(() => {
+    const f = ref.current!;
+    const values = {
+      ...firstTouch(),
+      startedAt: String(Date.now()),
+      page_url: location.origin + location.pathname,
+    };
+    attribution.current = values;
+    for (const [key, value] of Object.entries(values)) {
+      const el = f.elements.namedItem(key) as HTMLInputElement | null;
+      if (el) el.value = value;
+    }
+    const q = new URLSearchParams(location.search);
+    for (const key of ["partNumber", "message"]) {
+      const el = f.elements.namedItem(key) as HTMLInputElement | null;
+      if (el && q.get(key)) el.value = q.get(key)!;
+    }
+    const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const render = () => {
+      if (cancelled) return;
+      if (!window.turnstile) {
+        timer = setTimeout(render, 150);
+        return;
+      }
+      if (turnstileRef.current)
+        widget.current = window.turnstile.render(turnstileRef.current, {
+          sitekey,
+          appearance: "interaction-only",
+          action: "inquiry",
+        });
+    };
+    if (sitekey) {
+      if (!document.getElementById("turnstile-script")) {
+        const script = document.createElement("script");
+        script.id = "turnstile-script";
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        document.head.append(script);
+      }
+      render();
+    }
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      if (widget.current) window.turnstile?.remove(widget.current);
+    };
+  }, []);
+  const tracking = () => ({
+    page_id: pageId,
+    template,
+    entry_location: ref.current?.dataset.entry || entry,
+  });
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    setFields({});
+    const submission = new FormData(e.currentTarget);
+    for (const [key, value] of Object.entries(attribution.current))
+      submission.set(key, value);
+    submission.set("entry_location", tracking().entry_location);
+    try {
+      const response = await fetch("/api/leads/", {
+        method: "POST",
+        body: submission,
+      });
+      const result = await response.json();
+      if (!response.ok || !result.requestId) {
+        setFields(result.fields || {});
+        throw new Error(result.error || "Your request could not be saved.");
+      }
+      trackEvent("form_submit_success", tracking());
+      if (replacement) trackEvent("part_number_submit", tracking());
+      setSuccess(true);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Connection lost. Please try again.",
+      );
+      trackEvent("form_submit_error", tracking());
+      if (widget.current) window.turnstile?.reset(widget.current);
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (success)
+    return (
+      <div role="status" className="form-success">
+        <h2>Got it. Nina will reply within 24 hours.</h2>
+        {whatsappUrl && (
+          <a href={whatsappUrl} data-entry={entry}>
+            WhatsApp
+          </a>
+        )}
+      </div>
+    );
+  const optional = full
+    ? [
+        "company",
+        "country",
+        "whatsappNumber",
+        "brand",
+        "partNumber",
+        "quantity",
+        "application",
+      ]
+    : replacement
+      ? ["partNumber", "quantity"]
+      : [];
+  const labels: Record<string, string> = {
+    name: "Name",
+    email: "Email",
+    company: "Company",
+    country: "Country",
+    whatsappNumber: "WhatsApp number",
+    brand: "Brand",
+    partNumber: "Part number",
+    quantity: "Quantity",
+    application: "Application",
+  };
+  return (
+    <form
+      ref={ref}
+      className="quote-form"
+      onSubmit={submit}
+      onChange={() => {
+        if (!started.current) {
+          started.current = true;
+          trackEvent("form_start", tracking());
+        }
+      }}
+    >
+      <p>Only name, email and your request are required.</p>
+      {Object.entries({
+        sourcePage: defaultSource,
+        page_id: pageId,
+        template,
+        entry_location: entry,
+        customer_type:
+          template === "T6"
+            ? pageId === "distributors"
+              ? "distributor"
+              : "integrator"
+            : "",
+        startedAt: "",
+        page_url: "",
+        referrer: "",
+        utm_source: "",
+        utm_medium: "",
+        utm_campaign: "",
+        utm_term: "",
+        utm_content: "",
+      }).map(([name, value]) => (
+        <input key={name} type="hidden" name={name} defaultValue={value} />
+      ))}
+      <div className="honeypot" aria-hidden="true">
+        <label>
+          Website
+          <input name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+      <div className="form-grid">
+        {["name", "email", ...optional].map((name) => (
+          <div className="field" key={name}>
+            <label htmlFor={`${formId}-${name}`}>
+              {labels[name]}
+              {["name", "email"].includes(name) ? " *" : " (optional)"}
+            </label>
+            <input
+              id={`${formId}-${name}`}
+              name={name}
+              type={name === "email" ? "email" : "text"}
+              required={["name", "email"].includes(name)}
+              maxLength={name === "email" ? 254 : 160}
+              aria-invalid={!!fields[name]}
+            />
+            {fields[name] && <p className="field-error">{fields[name][0]}</p>}
+          </div>
+        ))}
+      </div>
+      <div className="field">
+        <label htmlFor={`${formId}-message`}>Your request *</label>
+        <textarea
+          id={`${formId}-message`}
+          name="message"
+          required
+          minLength={10}
+          maxLength={8000}
+          placeholder={messagePrompt}
+          aria-invalid={!!fields.message}
+        />
+        {fields.message && <p className="field-error">{fields.message[0]}</p>}
+      </div>
+      <div className="field">
+        <label htmlFor={`${formId}-files`}>Attach files (optional)</label>
+        <input
+          id={`${formId}-files`}
+          name="attachment"
+          type="file"
+          multiple
+          accept=".jpg,.jpeg,.png,.pdf,.xlsx,.csv,.dwg"
+          onChange={(e) => {
+            const files = Array.from(e.target.files || []);
+            e.target.setCustomValidity(
+              files.length > 5
+                ? "Choose at most 5 files."
+                : files.some((f) => f.size > 10 * 1024 * 1024)
+                  ? "Each file must be 10 MB or smaller."
+                  : "",
+            );
+            if (files.length) trackEvent("file_attach", tracking());
+          }}
+        />
+        <p>JPG, PNG, PDF, XLSX, CSV or DWG. Up to 5 files, 10 MB each.</p>
+        {fields.attachment && (
+          <p className="field-error">{fields.attachment[0]}</p>
+        )}
+      </div>
+      <div ref={turnstileRef} />
+      {privacyPath && (
+        <p>
+          We use these details to respond to your request.{" "}
+          <a href={privacyPath}>Privacy policy</a>
+        </p>
+      )}
+      {error && (
+        <div role="alert">
+          <p>{error}</p>
+          <p>
+            Something went wrong. Email us at{" "}
+            <a href="mailto:sales@fhsfiltration.com">sales@fhsfiltration.com</a>
+            {whatsappUrl && (
+              <>
+                {" "}
+                or <a href={whatsappUrl}>WhatsApp</a>
+              </>
+            )}
+          </p>
+        </div>
+      )}
+      <button
+        className="button quote-button"
+        type="submit"
+        disabled={busy}
+        data-entry={entry}
+      >
+        {busy ? "Sending…" : "Send request"}
+      </button>
+    </form>
+  );
 }
