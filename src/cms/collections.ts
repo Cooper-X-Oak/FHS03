@@ -1,6 +1,7 @@
 import type { CollectionConfig, GlobalConfig } from 'payload';
 import { revalidatePath } from 'next/cache';
 import path from 'node:path';
+import sharp from 'sharp';
 import { allPages, handoffMap, pages, pageById, templateModules, sitemap } from '../lib/sitemap';
 import { revalidateProduct, revalidateShared } from './revalidate';
 import { administrator, authenticated, staffOnly } from './access';
@@ -75,7 +76,14 @@ export const Inquiries: CollectionConfig = {
 };
 export const Media: CollectionConfig = {
   slug: 'media', access: { ...staffOnly, read: () => true },
-  upload: { staticDir: path.resolve('data/media'), mimeTypes: ['image/jpeg','image/png','image/webp','image/avif','application/pdf'], imageSizes: [{ name: 'card', width: 640, formatOptions: { format: 'webp' } }] },
+  hooks: {beforeOperation:[async ({req})=>{
+    const file=req.file;
+    if(file?.mimetype==='image/svg+xml') {
+      const data=await sharp(file.data,{limitInputPixels:40_000_000}).webp().toBuffer();
+      req.file={...file,data,size:data.length,mimetype:'image/webp',name:file.name.replace(/\.svg$/i,'.webp')};
+    }
+  }]},
+  upload: { formatOptions:{format:'webp'}, staticDir: path.resolve('data/media'), mimeTypes: ['image/jpeg','image/png','image/webp','image/avif','image/svg+xml','application/pdf'], imageSizes: [{ name: 'card', width: 640, formatOptions: { format: 'webp' } }] },
   fields: [{ ...text('alt', true), localized: true }],
 };
 export const Attachments: CollectionConfig = {

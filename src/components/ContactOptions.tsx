@@ -14,11 +14,11 @@ export function ContactOptions({ source, whatsapp, wechatQR }: { source: string;
   }, () => source);
   return <div className="stack">
     <div className="contact-options">
-      {whatsapp && <a className="button secondary-button" onClick={() => trackQuoteEvent('whatsapp_click', originPage)} href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello FHS, I am looking for a replacement filter. Source page: ${originPage}`)}`}>{en.quote.whatsapp}</a>}
-      <button type="button" className="button secondary-button" aria-expanded={open} onClick={() => { setOpen(!open); if (!open) trackQuoteEvent('wechat_open', originPage); }}>{en.quote.wechat}</button>
+      {whatsapp && <a className="button secondary-button" data-entry="end" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello FHS, I am looking for a replacement filter. Source page: ${originPage}`)}`}>{en.quote.whatsapp}</a>}
+      {wechatQR&&<button type="button" data-entry="end" className="button secondary-button" aria-expanded={open} onClick={() => { setOpen(!open); if (!open) trackQuoteEvent('wechat_open', originPage); }}>{en.quote.wechat}</button>}
     </div>
     {open && <div className="contact-qr">
-      {wechatQR ? <Image unoptimized src={wechatQR.url} alt={wechatQR.alt} width={wechatQR.width} height={wechatQR.height}/> : <p>[Confirm WeChat QR code]</p>}
+      {wechatQR ? <Image unoptimized src={wechatQR.url} alt={wechatQR.alt} width={wechatQR.width} height={wechatQR.height}/> : null}
     </div>}
   </div>;
 }
