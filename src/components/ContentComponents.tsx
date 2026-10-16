@@ -12,9 +12,9 @@ export function Breadcrumb({page}: {page: Page}) {
   if (page.id === 'home') return null;
   return <><nav className="container breadcrumb type-body-sm" aria-label={bibleUi["Breadcrumb"]} data-module="C6"><ol>{[...ancestors(page), page].map(p => <li key={p.id}>{p.id === page.id || !isPublicPage(p) ? <span aria-current="page">{p.label}</span> : <a href={p.path}>{p.label}</a>}</li>)}</ol></nav><StructuredData data={breadcrumbData(page)}/></>;
 }
-export function SpecOptionsTable({rows, source}: {rows: {label: string; value: string; note?: string}[]; source: string}) {
+export function SpecOptionsTable({rows, source, showCta=true}: {showCta?:boolean; rows: {label: string; value: string; note?: string}[]; source: string}) {
   void source;
-  return <div className="stack"><div className="table-wrap" tabIndex={0} role="region" aria-label={bibleUi["Specification options"]}><table><caption className="sr-only">{bibleUi["Specification options to confirm for your order"]}</caption><thead><tr><th scope="col">{bibleUi["Option"]}</th><th scope="col">{bibleUi["Specification"]}</th><th scope="col">{bibleUi["Selection note"]}</th></tr></thead><tbody>{rows.map(row => <tr key={row.label}><th scope="row">{row.label}</th><td className="mono">{row.value}</td><td>{row.note}</td></tr>)}</tbody></table></div><div><RequestLink entry="mid"/></div></div>;
+  return <div className="stack"><div className="table-wrap" tabIndex={0} role="region" aria-label={bibleUi["Specification options"]}><table><caption className="sr-only">{bibleUi["Specification options to confirm for your order"]}</caption><thead><tr><th scope="col">{bibleUi["Option"]}</th><th scope="col">{bibleUi["Specification"]}</th><th scope="col">{bibleUi["Selection note"]}</th></tr></thead><tbody>{rows.map(row => <tr key={row.label}><th scope="row">{row.label}</th><td className="mono">{row.value}</td><td>{row.note}</td></tr>)}</tbody></table></div>{showCta&&<div><RequestLink entry="mid"/></div>}</div>;
 }
 export type VerifiedRow = {brand: string; partNumber: string; equivalent: string; spec: string; checkedAt: string; verified: true};
 export async function CrossReferenceTable({rows, source, id}: {rows?: VerifiedRow[]; source: string; id: string}) {

@@ -3,7 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import sharp from 'sharp';
-import nodemailer from 'nodemailer';
+import {mailTransport} from './lib/inquiry-mail';
 import path from 'node:path';
 import { Users, Pages, Products, CrossReferences, News, Cases, Inquiries, Media, Attachments, globals } from './cms/collections';
 import { sitemap } from './lib/sitemap';
@@ -26,7 +26,7 @@ export default buildConfig({
   typescript: { outputFile: path.resolve('src/payload-types.ts') },
   graphQL: { disable: true },
   upload: { limits: { fileSize: 10 * 1024 * 1024 } },
-  email: process.env.SMTP_HOST ? nodemailerAdapter({ defaultFromAddress: process.env.LEAD_FROM || 'sales@fhsfiltration.com', defaultFromName: 'FHS Filtration', skipVerify: true, transport: nodemailer.createTransport({ host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT || 587), secure: process.env.SMTP_SECURE === 'true', auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } : undefined } ) }) : undefined,
+  email: process.env.SMTP_HOST && process.env.LEAD_FROM ? nodemailerAdapter({ defaultFromAddress: process.env.LEAD_FROM, defaultFromName: 'FHS Filtration', skipVerify: true, transport: mailTransport() }) : undefined,
   plugins: [
     s3Storage({ enabled: r2, alwaysInsertFields: true, bucket: process.env.R2_MEDIA_BUCKET || 'local-media', config: s3Config, collections: { media: true } }),
     s3Storage({ enabled: r2, alwaysInsertFields: true, bucket: process.env.R2_PRIVATE_BUCKET || 'local-private', config: s3Config, collections: { attachments: true }, clientUploads: false }),

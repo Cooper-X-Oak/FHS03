@@ -8,7 +8,7 @@ export function StickyQuoteBar({label, source, quotePath, whatsapp, module, quot
   return <aside aria-label={bibleUi["Request a quote"]} className="sticky-quote" data-module={module||'C4'}>
     <div className="container sticky-inner"><strong>{label}</strong>
       {whatsapp ? <a className="button secondary-button" data-entry="sticky" href={`https://wa.me/${whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi Nina, I'm looking at ${label} on fhsfiltration.com.`)}`}>{bibleUi["WhatsApp"]}</a> : null}
-      {!quoteOnly&&<RequestLink entry="sticky">{bibleUi["Send request"]}</RequestLink>}
+      {!quoteOnly&&<RequestLink entry="sticky" secondary>{bibleUi["Send request"]}</RequestLink>}
     </div>
   </aside>;
 }

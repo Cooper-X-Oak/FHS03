@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import nodemailer from 'nodemailer';
+import {mailTransport,inquirySubject,inquiryText,autoReplyEnabled} from '../lib/inquiry-mail';
 import { cms } from './content';
 import type { LeadInput, Attachment } from '../lib/leads';
 
@@ -22,14 +22,14 @@ export async function saveInquiry(input: LeadInput, attachment?: Attachment|Atta
 
 export async function deliverInquiry(inquiry: Awaited<ReturnType<typeof saveInquiry>>, attachment?: Attachment|Attachment[]) {
   const payload = await cms();
-  const transport = nodemailer.createTransport({ host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT || 587), secure: process.env.SMTP_SECURE === 'true', auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } : undefined, connectionTimeout: 10000, socketTimeout: 15000 });
+  const transport = mailTransport();
   try {
     if (inquiry.salesEmailStatus !== 'sent') {
-      const fields = ['reference','name','email','company','country','brand','partNumber','application','quantity','message','sourcePage','page_id','template','entry_location','page_url','referrer','whatsappNumber','customer_type','utm_source','utm_medium','utm_campaign','utm_term','utm_content'] as const;
-      await transport.sendMail({ from: process.env.LEAD_FROM, to: process.env.LEAD_RECIPIENT, replyTo: inquiry.email || undefined, subject: `FHS quote request [${inquiry.page_id}] ${inquiry.reference}`, text: fields.map(key => `${key}: ${inquiry[key] || ''}`).join('\n'), attachments: attachment ? (Array.isArray(attachment)?attachment:[attachment]) : [] });
+      const input = inquiry as unknown as LeadInput;
+      await transport.sendMail({from:process.env.LEAD_FROM,to:process.env.LEAD_RECIPIENT,replyTo:inquiry.email||undefined,subject:inquirySubject(input),text:inquiryText(input),attachments:attachment?(Array.isArray(attachment)?attachment:[attachment]):[]});
       await payload.update({ collection: 'inquiries', id: inquiry.id, overrideAccess: true, data: { salesEmailStatus: 'sent' } });
     }
-    if (inquiry.buyerEmailStatus !== 'sent') {
+    if (autoReplyEnabled() && inquiry.buyerEmailStatus !== 'sent') {
       await transport.sendMail({ from: process.env.LEAD_FROM, to: inquiry.email || '', replyTo: process.env.LEAD_RECIPIENT, subject: `We received your filtration request — ${inquiry.reference}`, text: `Hello ${inquiry.name},\n\nGot it. I will reply within 24 hours.\n\nReference: ${inquiry.reference}\n\nNina\nFHS Filtration` });
       await payload.update({ collection: 'inquiries', id: inquiry.id, overrideAccess: true, data: { buyerEmailStatus: 'sent' } });
     }

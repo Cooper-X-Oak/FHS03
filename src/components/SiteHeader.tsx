@@ -11,7 +11,7 @@ export type HeaderMenu = Link & {presentation?: 'media'|'links'; mobileVisible?:
 function NavigationArrow({back = false}: {back?: boolean}) {
   return <svg className={styles.arrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d={back ? 'm14 6-6 6 6 6m6-12-6 6 6 6' : 'm4 6 6 6-6 6m6-12 6 6-6 6'}/></svg>;
 }
-export function SiteHeader({menus, home, catalog, quote, source, contactAvailable=true}: {menus: HeaderMenu[]; home: Link; catalog: Link; quote: Link; source: string; contactAvailable?: boolean}) {
+export function SiteHeader({menus, home, catalog, quote, source, contactAvailable=true,subduedCta=false}: {menus: HeaderMenu[]; home: Link; catalog: Link; quote: Link; source: string; contactAvailable?: boolean; subduedCta?:boolean}) {
   const [active, setActive] = useState<number|null>(null);
   const [category, setCategory] = useState(0);
   const [mobile, setMobile] = useState(false);
@@ -73,7 +73,7 @@ export function SiteHeader({menus, home, catalog, quote, source, contactAvailabl
         </nav>
         <div className={styles.actions}>
           {catalog.is_live&&<a className={styles.search} href={catalog.is_live ? catalog.path : undefined} aria-label={`Search ${catalog.label}`}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>{bibleUi["Search"]}</span></a>}
-          {contactAvailable?<RequestLink entry="nav"/>:quote.is_live?<a className="button quote-button" data-entry="nav" href={quote.path}>{bibleUi["Send request"]}</a>:null}
+          {contactAvailable?<RequestLink entry="nav" secondary={subduedCta}/>:quote.is_live?<a className="button quote-button" data-entry="nav" href={quote.path}>{bibleUi["Send request"]}</a>:null}
           <button ref={menuToggle} className="menu-toggle" aria-label={mobile ? bibleUi["Close menu"] : bibleUi["Open menu"]} aria-expanded={mobile} aria-controls="main-navigation" onClick={() => {setMobile(!mobile); setActive(null);}}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{mobile ? <path d="m6 6 12 12M6 18 18 6"/> : <path d={"M4 8h16M4 16h16"}/>}</svg></button>
         </div>
       </div>

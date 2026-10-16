@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { randomUUID, createHash } from 'node:crypto';
 import { mkdir, writeFile, rename, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import nodemailer from 'nodemailer';
+import {mailTransport,inquirySubject,inquiryText} from './inquiry-mail';
 
 export const leadSchema = z.object({
   name: z.string().trim().min(1, 'Enter your name.').max(120),
@@ -69,9 +69,9 @@ export async function storeLead(input: LeadInput, attachment?: Attachment) {
   return {id, dir, record};
 }
 export async function sendLeadEmail(lead: Awaited<ReturnType<typeof storeLead>>, attachment?: Attachment) {
-  const transport = nodemailer.createTransport({host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT || 587), secure: process.env.SMTP_SECURE === 'true', auth: process.env.SMTP_USER ? {user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD} : undefined, connectionTimeout: 10000, socketTimeout: 15000});
+  const transport = mailTransport();
   try {
-    await transport.sendMail({from: process.env.LEAD_FROM, to: process.env.LEAD_RECIPIENT, replyTo: lead.record.email, subject: `FHS quote request ${lead.id}`, text: Object.entries(lead.record).filter(([key]) => key !== 'attachment').map(([key, value]) => `${key}: ${value}`).join('\n'), attachments: attachment ? [attachment] : []});
+    await transport.sendMail({from: process.env.LEAD_FROM, to: process.env.LEAD_RECIPIENT, replyTo: lead.record.email, subject: inquirySubject(lead.record), text: inquiryText(lead.record), attachments: attachment ? [attachment] : []});
     await atomicJson(path.join(lead.dir, 'request.json'), {...lead.record, emailStatus: 'sent', emailedAt: new Date().toISOString()});
   } finally { transport.close(); }
 }
