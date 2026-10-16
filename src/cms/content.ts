@@ -1,5 +1,6 @@
 import { getPayload } from 'payload';
 import config from '../payload.config';
+import {publishableContent} from '../lib/publishable-content';
 import type { PageContent } from '../content/types';
 import { pages, allPages, currentPageId, handoffMap } from '../lib/sitemap';
 
@@ -22,11 +23,12 @@ export async function assertPageCoverage() {
   if (missing.length || extra.length || actual.length !== expected.length) throw new Error(`CMS/SITEMAP mismatch. Missing: ${missing.join(', ')}; extra: ${extra.join(', ')}`);
   return active;
 }
-export async function getPageContent(id: string): Promise<PageContent> {
+export async function getPageContent(id: string, preview = false): Promise<PageContent> {
   const payload = await cms();
-  const result = await payload.find({ collection: 'pages', where: { pageId: { equals: id } }, locale: 'en', fallbackLocale: false, draft: false, limit: 1, depth: 1, overrideAccess: true });
+  const result = await payload.find({ collection: 'pages', where: { pageId: { equals: id } }, locale: 'en', fallbackLocale: false, draft: preview, limit: 1, depth: 1, overrideAccess: true });
   const doc = result.docs[0];
-  if (!doc?.content) throw new Error(`Missing published English CMS content: ${id}`);
+  if (!doc || (!preview && doc._status !== 'published')) throw new Error(`Missing published English CMS content: ${id}`);
+  if (!doc.content) return {description:'',intro:'',sections:[]};
   const content = decodeContent(doc.content as StoredContent);
-  return {...content, stages: content.stages?.map(stage => ({...stage, products: [...new Set(stage.products.map(currentPageId))]}))};
+  return publishableContent({...content, stages: content.stages?.map(stage => ({...stage, products: [...new Set((stage.products||[]).map(currentPageId))]}))});
 }
